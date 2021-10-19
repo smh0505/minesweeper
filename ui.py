@@ -36,6 +36,7 @@ def titleScreen(size, color_b):
     title = UI(size, color_b)
     title.menu.append("New Game")
     title.menu.append("Options")
+    title.menu.append("Records")
     title.menu.append("Quit")
     return title
 
@@ -46,3 +47,25 @@ def levelScreen(size, color_b):
     level.menu.append("Expert")
     level.menu.append("Back")
     return level
+
+def optionScreen(size, color_b):
+    option = UI(size, color_b)
+    option.menu.append("Resolution")
+    option.menu.append("Theme")
+    option.menu.append("Volume")
+    option.menu.append("Back")
+    return option
+
+def pauseScreen(size, color_b):
+    pause = UI(size, color_b)
+    pause.menu.append("Resume")
+    pause.menu.append("New Game")
+    pause.menu.append("Options")
+    pause.menu.append("Quit")
+    return pause
+
+def resolution(size, color_b):
+    res = UI(size, color_b)
+    res.menu.append("1024x768")
+    res.menu.append("Back")
+    return res
