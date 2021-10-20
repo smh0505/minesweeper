@@ -50,7 +50,6 @@ def levelScreen(size, color_b):
 
 def optionScreen(size, color_b):
     option = UI(size, color_b)
-    option.menu.append("Resolution")
     option.menu.append("Theme")
     option.menu.append("Volume")
     option.menu.append("Back")
@@ -61,11 +60,6 @@ def pauseScreen(size, color_b):
     pause.menu.append("Resume")
     pause.menu.append("New Game")
     pause.menu.append("Options")
+    pause.menu.append("Records")
     pause.menu.append("Quit")
     return pause
-
-def resolution(size, color_b):
-    res = UI(size, color_b)
-    res.menu.append("1024x768")
-    res.menu.append("Back")
-    return res

@@ -1,8 +1,8 @@
 import os
 import pygame as pg
-from pygame import font
+from pygame.constants import FULLSCREEN
 import ui
-from random import randint
+import cell
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 data_dir = os.path.join(main_dir, "data")
@@ -14,22 +14,9 @@ C4 = (82, 82, 78)
 
 fontname = os.path.join(data_dir, "ARCADE_N.TTF")
 
-def resetBoard(size, num):
-    board = [[0 for x in range(size[0])] for y in range(size[1])]
-    i = 0
-    while i < num:
-        x = randint(0, size[0] - 1)
-        y = randint(0, size[1] - 1)
-        if board[y][x] == 0:
-            board[y][x] = -1
-            i += 1
-
-    for row in board:
-        print(row)
-
 def main():
     pg.init()
-    screen = pg.display.set_mode((1024, 768))
+    screen = pg.display.set_mode((0, 0), FULLSCREEN)
     pg.display.set_caption("Minesweeper")
     pg.mouse.set_visible(0)
 
@@ -45,6 +32,10 @@ def main():
     option = ui.optionScreen(screen.get_size(), C4)
     option.printSelected(fontname, 36, C2, C3)
 
+    # Paused Screen
+    pause = ui.pauseScreen(screen.get_size(), C4)
+    pause.printSelected(fontname, 36, C2, C3)
+
     # Game board
     board = pg.Surface(screen.get_size()).convert()
     board.fill(C1)
@@ -54,6 +45,7 @@ def main():
     pg.display.flip()
     currentMode = 0
     diff = 0
+    isPlaying = False
 
     # Main function
     going = True
@@ -86,19 +78,29 @@ def main():
                         level.printSelected(fontname, 36, C2, C3)
                     if event.key == pg.K_SPACE:
                         if level.selected == 0:
-                            resetBoard((10, 10), 10)
-                            currentMode = 3
+                            isPlaying = True
+                            grid = cell.newBoard(10, 10)
+                            grid = cell.setMine(grid, 10)
+                            cell.printBoard(grid)
+                            currentMode = 4
                         elif level.selected == 1:
-                            resetBoard((16, 16), 40)
-                            currentMode = 3
+                            isPlaying = True
+                            grid = cell.newBoard(16, 16)
+                            grid = cell.setMine(grid, 40)
+                            cell.printBoard(grid)
+                            currentMode = 4
                         elif level.selected == 2:
-                            resetBoard((30, 16), 99)
-                            currentMode = 3
+                            isPlaying = True
+                            grid = cell.newBoard(30, 16)
+                            grid = cell.setMine(grid, 99)
+                            cell.printBoard(grid)
+                            currentMode = 4
                         else:
-                            currentMode = 0
+                            if isPlaying: currentMode = 3
+                            else: currentMode = 0
                         level.resetSelected()
                         level.printSelected(fontname, 36, C2, C3)
-            elif currentMode == 2:
+            elif currentMode == 2:  # Options Screen
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_UP:
                         option.selectUp()
@@ -107,15 +109,33 @@ def main():
                         option.selectDown()
                         option.printSelected(fontname, 36, C2, C3)
                     if event.key == pg.K_SPACE:
-                        if option.selected == 3:
-                            currentMode = 0
+                        if option.selected == 2:
+                            if isPlaying: currentMode = 3
+                            else: currentMode = 0
                             option.resetSelected()
                             option.printSelected(fontname, 36, C2, C3)
-                            
+            elif currentMode == 3:  # Paused Screen
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_UP:
+                        pause.selectUp()
+                        pause.printSelected(fontname, 36, C2, C3)
+                    if event.key == pg.K_DOWN:
+                        pause.selectDown()
+                        pause.printSelected(fontname, 36, C2, C3)
+                    if event.key == pg.K_SPACE:
+                        if pause.selected == 0:
+                            currentMode = 4
+                        elif pause.selected == 1:
+                            currentMode = 1
+                        elif pause.selected == 2:
+                            currentMode = 2
+                        elif pause.selected == 4:
+                            going = False
+
             else:
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_ESCAPE:
-                        currentMode = 0
+                        currentMode = 3
 
         # Switching screens
         if currentMode == 1:
@@ -123,6 +143,8 @@ def main():
         elif currentMode == 2:
             screen.blit(option.background, (0, 0))
         elif currentMode == 3:
+            screen.blit(pause.background, (0, 0))
+        elif currentMode == 4:
             screen.blit(board, (0, 0))
         else:
             screen.blit(title.background, (0, 0))
