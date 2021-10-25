@@ -1,4 +1,5 @@
 import pygame as pg
+import cell
 
 class UI:
     def __init__(self, size, color_b):
@@ -63,3 +64,16 @@ def pauseScreen(size, color_b):
     pause.menu.append("Records")
     pause.menu.append("Quit")
     return pause
+
+class GameBoard:
+    def __init__(self, size, color_b):
+        self.background = pg.Surface(size).convert()
+        self.resetBoard(color_b)
+
+    def resetBoard(self, color_b):
+        self.background.fill(color_b)
+
+    def drawBoard(self, grid, color):
+        frame = pg.Rect(0, 0, 32 * len(grid[0]), 32 * len(grid))
+        frame.center = (self.background.get_width() / 2, self.background.get_height() / 2)
+        pg.draw.rect(self.background, color, frame)

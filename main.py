@@ -37,8 +37,7 @@ def main():
     pause.printSelected(fontname, 36, C2, C3)
 
     # Game board
-    board = pg.Surface(screen.get_size()).convert()
-    board.fill(C1)
+    board = ui.GameBoard(screen.get_size(), C1)
 
     # Init
     screen.blit(title.background, (0, 0))
@@ -77,27 +76,35 @@ def main():
                         level.selectDown()
                         level.printSelected(fontname, 36, C2, C3)
                     if event.key == pg.K_SPACE:
+                        board.resetBoard(C1)
                         if level.selected == 0:
                             isPlaying = True
                             grid = cell.newBoard(10, 10)
                             grid = cell.setMine(grid, 10)
                             cell.printBoard(grid)
+                            board.drawBoard(grid, C3)
                             currentMode = 4
                         elif level.selected == 1:
                             isPlaying = True
                             grid = cell.newBoard(16, 16)
                             grid = cell.setMine(grid, 40)
                             cell.printBoard(grid)
+                            board.drawBoard(grid, C3)
                             currentMode = 4
                         elif level.selected == 2:
                             isPlaying = True
                             grid = cell.newBoard(30, 16)
                             grid = cell.setMine(grid, 99)
                             cell.printBoard(grid)
+                            board.drawBoard(grid, C3)
                             currentMode = 4
                         else:
-                            if isPlaying: currentMode = 3
-                            else: currentMode = 0
+                            if isPlaying: 
+                                currentMode = 3
+                            else: 
+                                currentMode = 0
+                        pause.resetSelected()
+                        pause.printSelected(fontname, 36, C2, C3)
                         level.resetSelected()
                         level.printSelected(fontname, 36, C2, C3)
             elif currentMode == 2:  # Options Screen
@@ -110,8 +117,10 @@ def main():
                         option.printSelected(fontname, 36, C2, C3)
                     if event.key == pg.K_SPACE:
                         if option.selected == 2:
-                            if isPlaying: currentMode = 3
-                            else: currentMode = 0
+                            if isPlaying: 
+                                currentMode = 3
+                            else: 
+                                currentMode = 0
                             option.resetSelected()
                             option.printSelected(fontname, 36, C2, C3)
             elif currentMode == 3:  # Paused Screen
@@ -145,7 +154,7 @@ def main():
         elif currentMode == 3:
             screen.blit(pause.background, (0, 0))
         elif currentMode == 4:
-            screen.blit(board, (0, 0))
+            screen.blit(board.background, (0, 0))
         else:
             screen.blit(title.background, (0, 0))
         pg.display.flip()
